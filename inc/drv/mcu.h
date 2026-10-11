@@ -143,7 +143,7 @@
 #define STM32H5
 #endif
 
-// HSI 64 MHz / HSIDIV 2 = 32 MHz after reset (RM0481 11.4.2)
+// Reset clock: HSI 64 MHz / HSIDIV 2 = 32 MHz
 #define DEFAULT_CLOCK_SPEED 32000000
 #define YSS__CORE_CM33_H_GENERIC
 #define YSS__RUNTIME_SUPPORT

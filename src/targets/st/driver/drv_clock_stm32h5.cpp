@@ -54,7 +54,7 @@ uint32_t Clock::getApb1TimerClockFrequency(void)
 {
 	uint32_t pclk1 = getApb1ClockFrequency();
 
-	// RM0481 11.4.21: with TIMPRE = 0, timer clock = PCLK1 if APB1 prescaler is 1, else 2 x PCLK1
+	// With TIMPRE = 0 (reset value), timer clock = PCLK1 if APB1 prescaler is 1, else 2 x PCLK1
 	if (LL_RCC_GetAPB1Prescaler() == LL_RCC_APB1_DIV_1)
 		return pclk1;
 	else
