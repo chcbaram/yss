@@ -78,7 +78,7 @@ void initializeYss(void)
 	mutex.initializeMutex();
 
 	// Enable the system tick timer for scheduler time slices.
-#if defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM23_H_GENERIC)
+#if defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM33_H_GENERIC) || defined(YSS__CORE_CM23_H_GENERIC)
     __setInterruptPriority(PendSV_IRQn, 15);
 	SysTick_Config(THREAD_GIVEN_CLOCK);
 #elif defined(YSS__CORE_CA35_H_GENERIC)
@@ -127,7 +127,7 @@ void initializeYss(void)
 	event::init();
 #endif
 
-#if defined(EXTI)
+#if defined(EXTI) && !defined(YSS_DRV_EXTI_UNSUPPORTED)
 	exti.enableClock(true);
 	exti.__enableInterrupt(true);
 #elif defined(__M46x_SUBFAMILY)

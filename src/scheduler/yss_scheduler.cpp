@@ -35,6 +35,19 @@
 #define MIN_STACK_SIZE		2048
 #endif
 
+// EXC_RETURN placed in a new thread's initial frame. It is used only for the
+// first entry into the thread; afterwards PendSV saves and restores the real LR.
+// - ARMv7-M / ARMv6-M / ARMv8-M Secure : 0xFFFFFFFD (Thread mode, PSP, basic frame)
+// - ARMv8-M Non-secure                 : 0xFFFFFFBC (S=0, DCRS=1, FType=1, Mode=1, SPSEL=1, ES=0)
+//   0xFFFFFFFD on ARMv8-M means "return to Secure state" (S=1, ES=1) and faults
+//   when the core runs Non-secure, e.g. STM32H5 with TrustZone disabled (TZEN=0).
+//   Cortex-M33 targets that run Secure (EFR32BG22, EFM32PG22) define YSS__CM33_SECURE.
+#if defined(YSS__CORE_CM33_H_GENERIC) && !defined(YSS__CM33_SECURE)
+#define YSS_INITIAL_EXC_RETURN	0xFFFFFFBC
+#else
+#define YSS_INITIAL_EXC_RETURN	0xFFFFFFFD
+#endif
+
 // Pre-allocation depth used for scheduler stack bookkeeping.
 #define PREOCCUPY_DEPTH		(MAX_THREAD * 2)
 
@@ -143,7 +156,7 @@ inline void disableSchedulerTimer(void)
 {
 #if defined(YSS__CORE_CA35_H_GENERIC)
 	raw_write_cntps_ctl_el1(0);
-#elif defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM23_H_GENERIC)
+#elif defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM33_H_GENERIC) || defined(YSS__CORE_CM23_H_GENERIC)
 	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
 #endif
 }
@@ -152,7 +165,7 @@ inline void enableSchedulerTimer(void)
 {
 #if defined(YSS__CORE_CA35_H_GENERIC)
 	raw_write_cntps_ctl_el1(1);
-#elif defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM23_H_GENERIC)
+#elif defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM33_H_GENERIC) || defined(YSS__CORE_CM23_H_GENERIC)
 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
 #endif
 }
@@ -305,7 +318,7 @@ threadId_t add(void (*func)(void *), void *var, int32_t stackSize, void *r8, voi
     *sp-- = (uintptr_t)r9;                                   // R9[cite: 5]
     *sp-- = (uintptr_t)r8;                                   // R8[cite: 5]
     sp -= 4;                                                // Skip R7-R4[cite: 5]
-    *sp = 0xfffffffd;                                       // EXC_RETURN (Thread mode using PSP)[cite: 5, 9]
+    *sp = YSS_INITIAL_EXC_RETURN;                           // EXC_RETURN (Thread mode using PSP)[cite: 5, 9]
 #elif defined(YSS__CORE_CA35_H_GENERIC)
     if ((uintptr_t)sp & 0xF)
         sp--;
@@ -1062,7 +1075,7 @@ static inline void prepareStack(triggerId_t id)
     sp -= 4;                                         // Skip hardware-saved R12, R3, R2, R1[cite: 5]
     *sp-- = (uintptr_t)thread->var;        // R0 (Parameter passed to trigger)[cite: 5]
     sp -= 8;                                         // Skip callee-saved R11-R4[cite: 5]
-    *sp = 0xfffffffd;                                // EXC_RETURN (Return to Thread mode using PSP)[cite: 5, 9]
+    *sp = YSS_INITIAL_EXC_RETURN;                    // EXC_RETURN (Return to Thread mode using PSP)[cite: 5, 9]
 #elif defined(YSS__CORE_CA35_H_GENERIC)
     if ((uintptr_t)sp & 0xF)
         sp--;

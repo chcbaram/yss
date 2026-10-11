@@ -127,12 +127,14 @@
 #define EFM32PG22
 #define DEFAULT_CLOCK_SPEED 20000000
 #define YSS__CORE_CM33_H_GENERIC
+#define YSS__CM33_SECURE
 
 #elif defined(EFR32BG22C224F512IM40)
 
 #define EFR32BG22
 #define DEFAULT_CLOCK_SPEED 20000000
 #define YSS__CORE_CM33_H_GENERIC
+#define YSS__CM33_SECURE
 
 #elif defined(MAX32672)
 
@@ -186,7 +188,11 @@
 
 #endif
 
-#if defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM23_H_GENERIC)
+#ifndef YSS__CORE_COUNT
+#define YSS__CORE_COUNT		1
+#endif
+
+#if defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM33_H_GENERIC) || defined(YSS__CORE_CM23_H_GENERIC)
 #define __getCoreInterruptStatus	__get_PRIMASK
 #define __setCoreInterruptStatus	__set_PRIMASK
 #define __enableInterrupt			NVIC_EnableIRQ
