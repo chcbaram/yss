@@ -59,6 +59,8 @@ typedef struct
 #include <targets/analog_devices/Max32665Gpio.h>
 #elif defined(NRF52840_XXAA)
 #include <targets/nordic/nRF52_Gpio.h>
+#elif defined(STM32H5)
+#include <targets/st/Stm32h5Gpio.h>
 #else
 
 class Gpio : public Drv

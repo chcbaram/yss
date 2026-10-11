@@ -63,6 +63,10 @@
 
 #include <targets/st/stm32f7xx.h>
 
+#elif defined(STM32H5)
+
+#include <stm32h5xx.h>
+
 #elif defined(GD32F10X_XD)
 
 #include <targets/st/stm32f103xg.h>

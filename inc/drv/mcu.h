@@ -136,6 +136,19 @@
 #define YSS__CORE_CM33_H_GENERIC
 #define YSS__CM33_SECURE
 
+#elif defined(STM32H503xx) || defined(STM32H523xx) || defined(STM32H533xx) || \
+	defined(STM32H562xx) || defined(STM32H563xx) || defined(STM32H573xx)
+
+#ifndef STM32H5
+#define STM32H5
+#endif
+
+// HSI 64 MHz / HSIDIV 2 = 32 MHz after reset (RM0481 11.4.2)
+#define DEFAULT_CLOCK_SPEED 32000000
+#define YSS__CORE_CM33_H_GENERIC
+#define YSS__RUNTIME_SUPPORT
+#define YSS__CORE_COUNT		1
+
 #elif defined(MAX32672)
 
 #define DEFAULT_CLOCK_SPEED 100000000

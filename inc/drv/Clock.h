@@ -38,6 +38,8 @@
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M25x_FAMILY) || defined(__MA35H0_FAMILY)
 #include <targets/nuvoton/NuvotonClock.h>
+#elif defined(STM32H5)
+#include <targets/st/Stm32h5Clock.h>
 #endif
 
 #endif

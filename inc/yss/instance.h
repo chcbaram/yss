@@ -25,6 +25,8 @@ extern Nvic nvic;   ///< Global instance of NVIC (Nested Vectored Interrupt Cont
 #include <targets/analog_devices/instance.h>
 #elif defined(NRF52840_XXAA)
 #include <targets/nordic/instance.h>
+#elif defined(STM32H5)
+#include <targets/st/instance.h>
 #endif
 
 #endif
